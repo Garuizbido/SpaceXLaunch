@@ -29,19 +29,40 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.MapGet("/launches", async (int per_page = 10, int page = 1) =>
+app.MapGet("/launches", async (string per_page = "10", string page = "1") =>
 {
-    if( per_page <= 0)
+    int amount;
+    int curr;
+
+    if(int.TryParse(per_page, out amount))
     {
-        per_page = 10;
+        
+    }
+    else
+    {
+        amount = 10;
     }
 
-    if(page <= 0)
+    if (int.TryParse(page, out curr))
     {
-        page = 1;
+
+    }
+    else
+    {
+        curr = 1;
     }
 
-    int start = per_page * (page - 1);
+    if ( amount <= 0)
+    {
+        amount = 10;
+    }
+
+    if(curr <= 0)
+    {
+        curr = 1;
+    }
+
+    int start = amount * (curr - 1);
 
     var launchRequest = new GraphQLRequest
     {
@@ -54,8 +75,8 @@ app.MapGet("/launches", async (int per_page = 10, int page = 1) =>
         }",
         Variables = new
         {
-            per_page = page * per_page,
-            start = (page-1) * per_page
+            per_page = curr * amount,
+            start = (curr-1) * amount
         }
     };
 
